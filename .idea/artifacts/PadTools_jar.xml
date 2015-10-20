@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PadTools:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PadTools_jar</output-path>
+    <root id="archive" name="PadTools.jar">
+      <element id="module-output" name="PadTools" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

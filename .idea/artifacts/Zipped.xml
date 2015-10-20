@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact name="Zipped">
+    <output-path>$PROJECT_DIR$/out/artifacts/zipped</output-path>
+    <root id="root">
+      <element id="archive" name="padtools.zip">
+        <element id="artifact" artifact-name="PadTools:jar" />
+        <element id="file-copy" path="$PROJECT_DIR$/bundle/ReadMe.win.txt" />
+        <element id="file-copy" path="$PROJECT_DIR$/bundle/ReadMe.linux.txt" />
+      </element>
+    </root>
+  </artifact>
+</component>
