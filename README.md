@@ -8,7 +8,6 @@ PadTools はPAD図を活用することを目的として作成された、PAD�
 
 リンク
 ------------------------------------------------
-* GitHub [https://github.com/knaou/padtools](https://github.com/knaou/padtools)
 * 公開サイト [http://naou.cool-ex.com/padtools/](http://naou.cool-ex.com/padtools/)
     * 利用法などは公開サイトを参照
 
