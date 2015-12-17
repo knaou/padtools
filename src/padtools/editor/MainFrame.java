@@ -1,61 +1,5 @@
 package padtools.editor;
 
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import padtools.core.formats.spd.ParseErrorException;
 import padtools.core.formats.spd.ParseErrorReceiver;
 import padtools.core.formats.spd.SPDParser;
@@ -65,33 +9,36 @@ import padtools.core.view.Model2View;
 import padtools.core.view.ViewOption;
 import padtools.util.PathUtil;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.*;
+
 /*
  *
  * @author monaou
  */
 public class MainFrame extends JFrame {
 
-    /**
-     * タイトル付きパネルを生成するためのクラス。
-     */
-    private class TitledPanel extends JPanel {
-
-        /**
-         * タイトル付きのコンポーネントを表示する。
-         * @param comp 表示するメインのコンポーネント。
-         * @param title 表示するタイトル。
-         */
-        public TitledPanel(Component comp, String title) {
-            super(new BorderLayout());
-            //this.add(new JLabel(title), BorderLayout.NORTH);
-            this.add(comp, BorderLayout.CENTER);
-            this.setBorder(new TitledBorder(title));
-        }
-    }
-
     private final SPDEditor editor;
     private final JList messageList;
     private final Model2View model2View = new Model2View();
+    /**
+     * アプリケーション名
+     */
+    private String applicationName = "PadTools";
+    /**
+     * アプリケーションバージョン
+     */
+    private String applicationVersion = "1.1α";
     private File filePath = null;//開いているファイル
     private BufferedView view = null;
     private final JPanel viewPanel = new JPanel() {
@@ -109,12 +56,85 @@ public class MainFrame extends JFrame {
     };
     //最後に選択された行
     private int beforeLine = 0;
+    private ImageIcon iconNew;
+    private ActionListener actionNew = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            if (releaseOK()) {
+                newDocument();
+            }
+        }
+    };
+    private ImageIcon iconOpen;
+    private ActionListener actionOpen = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            if (releaseOK()) {
+                open();
+            }
+        }
+    };
+    private ImageIcon iconSave;
+    private ActionListener actionSave = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            save();
+        }
+    };
+    private ActionListener actionSaveAs = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            saveAs();
+        }
+    };
+    private ImageIcon iconClipboard;
+    private ImageIcon iconSavePad;
+    private ActionListener actionSavePadImage = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            applyLogic();
+            savePadImage();
+        }
+    };
+    private ImageIcon iconRefresh;
+    private ActionListener actionRefresh = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            applyLogic();
+        }
+    };
+    private ImageIcon iconHelp;
+    private ActionListener actionVersion = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            JOptionPane.showMessageDialog(MainFrame.this, applicationName + " " + applicationVersion, "バージョン情報", JOptionPane.INFORMATION_MESSAGE);
+        }
+    };
+    private ActionListener actionClose = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            if (releaseOK()) {
+                MainFrame.this.dispose();
+            }
+        }
+    };
 
     public MainFrame(final File file) {
-        super("SPD Editor");
+        super("");
         //各コンポーネントを生成を生成
         editor = new SPDEditor();
         messageList = new JList(new DefaultListModel());
+
+        // タイトル設定
+        mySetTitle("");
 
         //アイコンの読み込み
         //画像を読み込む
@@ -218,104 +238,46 @@ public class MainFrame extends JFrame {
             }
         });
 
-        
-            SwingUtilities.invokeLater(new Runnable() {
 
-                @Override
-                public void run() {
-                    //初期値設定
-                    if(file == null){
-                    
-                        //初期文字列設定
-                        String header = ":terminal START\n\n";
-                        String comment = "#ロジックを記述してください\nロジック";
-                        String footer = "\n\n:terminal END";
-                        editor.requestFocusInWindow();
-                        editor.setText(header + comment + footer);
-                        editor.select(header.length(), header.length() + comment.length());
-                        editor.setEdited(false);
-                        editor.setRequireSave(false);
+        SwingUtilities.invokeLater(new Runnable() {
 
-                        applyLogic();
-                    }
-                    else {
-                        open(file);
-                    }
-                    
+            @Override
+            public void run() {
+                //初期値設定
+                if (file == null) {
+
+                    //初期文字列設定
+                    String header = ":terminal START\n\n";
+                    String comment = "#ロジックを記述してください\nロジック";
+                    String footer = "\n\n:terminal END";
+                    editor.requestFocusInWindow();
+                    editor.setText(header + comment + footer);
+                    editor.select(header.length(), header.length() + comment.length());
+                    editor.setEdited(false);
+                    editor.setRequireSave(false);
+
+                    applyLogic();
+
+                    // タイトルバーにNewと設定
+                    mySetTitle("New Edit");
+                } else {
+                    open(file);
+                    // タイトルバーにファイル名を設定
+                    mySetTitle(file.getAbsolutePath());
                 }
-            });
+
+            }
+        });
     }
-        
-    private ImageIcon iconNew;
-    private ActionListener actionNew = new ActionListener() {
 
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            if (releaseOK()) {
-                newDocument();
-            }
-        }
-    };
-    private ImageIcon iconOpen;
-    private ActionListener actionOpen = new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            if (releaseOK()) {
-                open();
-            }
-        }
-    };
-    private ImageIcon iconSave;
-    private ActionListener actionSave = new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            save();
-        }
-    };
-    private ActionListener actionSaveAs = new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            saveAs();
-        }
-    };
-    private ImageIcon iconClipboard;
-    private ImageIcon iconSavePad;
-    private ActionListener actionSavePadImage = new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            applyLogic();
-            savePadImage();
-        }
-    };
-    private ImageIcon iconRefresh;
-    private ActionListener actionRefresh = new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            applyLogic();
-        }
-    };
-    private ImageIcon iconHelp;
-    private ActionListener actionVersion = new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            JOptionPane.showMessageDialog(MainFrame.this, "PadTools 1.0", "バージョン情報", JOptionPane.INFORMATION_MESSAGE);
-        }
-    };
-    private ActionListener actionClose = new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            if (releaseOK()) {
-                MainFrame.this.dispose();
-            }
-        }
-    };
+    /**
+     * タイトルをセットする
+     *
+     * @param title タイトルと同時に表示すべき文字列
+     */
+    private void mySetTitle(String title) {
+        super.setTitle(this.applicationName + " " + title);
+    }
 
     private JToolBar createToolBar() throws IOException {
         JToolBar toolBar = new JToolBar();
@@ -333,10 +295,12 @@ public class MainFrame extends JFrame {
         button.setBorderPainted(false);
         button.addActionListener(actionOpen);
 
+        /* 上書き動作が怖いのでコメントアウトする
         button = new JButton("保存", iconSave);
         toolBar.add(button);
         button.setBorderPainted(false);
         button.addActionListener(actionSave);
+        */
 
         toolBar.addSeparator();
 
@@ -381,9 +345,11 @@ public class MainFrame extends JFrame {
 
         menu.addSeparator();
 
+        /* 動作が怖いのでコメントアウトする
         item = new JMenuItem("保存(S)", iconSave);
         menu.add(item);
         item.addActionListener(actionSave);
+        */
 
         item = new JMenuItem("名前を付けて保存(A)", null);
         menu.add(item);
@@ -512,7 +478,7 @@ public class MainFrame extends JFrame {
 
     /**
      * 解放してよいか確認する。
-     * @return 開放して良いか。 
+     * @return 開放して良いか。
      */
     private boolean releaseOK() {
         if (!editor.isRequireSave()) {
@@ -539,6 +505,8 @@ public class MainFrame extends JFrame {
     private void newDocument() {
         editor.setText("");
         editor.setRequireSave(false);
+        // タイトルバー設定
+        mySetTitle("New Edit");
         applyLogic();
     }
 
@@ -567,7 +535,7 @@ public class MainFrame extends JFrame {
                     JOptionPane.OK_OPTION,
                     JOptionPane.ERROR_MESSAGE);
         }
-        
+
         applyLogic();
     }
 
@@ -578,6 +546,8 @@ public class MainFrame extends JFrame {
         if (fc.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
             open(fc.getSelectedFile());
         }
+
+        mySetTitle(fc.getSelectedFile().getAbsolutePath());
     }
 
     private boolean save() {
@@ -591,6 +561,10 @@ public class MainFrame extends JFrame {
             ps.print(editor.getText());
             ps.close();
             editor.setRequireSave(false);
+
+            // タイトル設定
+            mySetTitle(file.getAbsolutePath());
+
         } catch (IOException ex) {
             JOptionPane.showConfirmDialog(
                     this,
@@ -620,7 +594,7 @@ public class MainFrame extends JFrame {
         applyLogic();
         JFileChooser fc = new JFileChooser(filePath == null ? new File(".") : filePath);
         fc.setFileFilter(new FileNameExtensionFilter("png image(*.png)", "png"));
-        
+
         File sel;
         if(filePath == null){
             sel = new File("./new_pad.png");
@@ -628,13 +602,13 @@ public class MainFrame extends JFrame {
         else{
             sel = new File(PathUtil.extConvert(filePath.getPath(), "png"));
         }
-        
+
         fc.setSelectedFile(sel);
 
         if (fc.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
             BufferedImage tmp = new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR);
             Graphics2D tmpg = tmp.createGraphics();
-            
+
             Point2D.Double size = view.getSize(tmpg);
             double scale = 1.0;
 
@@ -650,6 +624,25 @@ public class MainFrame extends JFrame {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * タイトル付きパネルを生成するためのクラス。
+     */
+    private class TitledPanel extends JPanel {
+
+        /**
+         * タイトル付きのコンポーネントを表示する。
+         *
+         * @param comp  表示するメインのコンポーネント。
+         * @param title 表示するタイトル。
+         */
+        public TitledPanel(Component comp, String title) {
+            super(new BorderLayout());
+            //this.add(new JLabel(title), BorderLayout.NORTH);
+            this.add(comp, BorderLayout.CENTER);
+            this.setBorder(new TitledBorder(title));
         }
     }
 
