@@ -14,3 +14,8 @@ PadTools はPAD図を活用することを目的として作成された、PAD�
     Copyright (c) 2015 naou
     
     Released under the MIT license(http://opensource.org/licenses/mit-license)
+
+CHANGELOG
+------------------------------------------------
+* 2015-12-xx タイトルバーに現在開いているファイルのフルパスを表示するように変更(予定)
+* 2015-12-xx 動作の危険な「保存」メニューを削除(予定)
