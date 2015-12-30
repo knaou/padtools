@@ -2,6 +2,9 @@ package padtools.util;
 
 import java.util.*;
 
+/**
+ * コマンド引数をオプション解析するkクラス
+ */
 public class OptionParser {
     private final Option[] options;
     private final LinkedList<String> arguments;
@@ -16,7 +19,7 @@ public class OptionParser {
     }
 
     public void parse(String[] args, int index) throws UnknownOptionException{
-        parse(args, index, args.length);
+        parse(args, index, args.length - index);
     }
 
     public void parse(String[] args, int index, int count) throws UnknownOptionException{

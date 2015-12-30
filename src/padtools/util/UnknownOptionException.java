@@ -1,11 +1,7 @@
 package padtools.util;
 
 /**
- * Created with IntelliJ IDEA.
- * User: monaou
- * Date: 12/07/08
- * Time: 13:57
- * To change this template use File | Settings | File Templates.
+ * 不明なオプションが指定された場合に発生する例外
  */
 public class UnknownOptionException extends Exception {
     private final String option;

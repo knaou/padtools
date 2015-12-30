@@ -5,7 +5,6 @@ package padtools.core.formats.spd;
  */
 public interface ParseErrorReceiver {
 
-
     /**
      * パースエラーを受け取る関数
      * @param lineStr 該当行の文字列

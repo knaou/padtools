@@ -1,5 +1,8 @@
 package padtools.core.formats.spd;
 
+/**
+ * インデントが不正な場合の例外
+ */
 public class IllegalIndentException extends ParseErrorException {
     public IllegalIndentException(){
         super(

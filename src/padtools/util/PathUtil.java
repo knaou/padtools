@@ -3,13 +3,16 @@ package padtools.util;
 import java.io.File;
 
 /**
- * Created with IntelliJ IDEA.
- * User: monaou
- * Date: 12/07/18
- * Time: 22:42
- * To change this template use File | Settings | File Templates.
+ * ファイルパスに関するユーティリティクラス
  */
 public class PathUtil {
+
+    /**
+     * 拡張子を変換したファイル名を取得する。
+     * @param base ファイル名
+     * @param ext 変換後の拡張子
+     * @return 拡張子が変換されたファイル名
+     */
     public static String extConvert(String base, String ext){
         String ret;
         File f = new File(base);

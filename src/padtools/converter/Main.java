@@ -14,17 +14,14 @@ import javax.imageio.ImageIO;
 import java.io.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: monaou
- * Date: 2012/07/29
- * Time: 22:08
- * To change this template use File | Settings | File Templates.
+ * コンバーターのメインクラス
  */
 public class Main {
-    private enum OutputType {
-        PNG, TEXT
-    }
 
+    /**
+     * エントリポイント
+     * @param args 引数
+     */
     public static void main(String[] args){
 
         final Option optHelp = new Option("h", "help", false);
@@ -42,7 +39,7 @@ public class Main {
         }
 
         if(optHelp.isSet()){
-            System.err.println("$ " + args[0] +  " [-t type] [-s scale] [-i lpd_file] [-o result_file] [-h]");
+            System.err.println("$ " + args[0] +  " [-s scale] [-i lpd_file] [-o result_file] [-h]");
             System.err.println("        -s:    Image scale.");
             System.err.println("  lpd_file:    Open lpd file.");
             System.err.println("  result_file: Save to result_file.");
@@ -111,7 +108,6 @@ public class Main {
                 return true;
             }
         });
-
 
         Model2View m2v = new Model2View();
         try{

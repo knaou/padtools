@@ -3,11 +3,7 @@ package padtools.util;
 import java.util.LinkedList;
 
 /**
- * Created with IntelliJ IDEA.
- * User: monaou
- * Date: 12/07/08
- * Time: 13:05
- * To change this template use File | Settings | File Templates.
+ * コマンドの引数を扱うクラス
  */
 public class Option {
     private final String shortOption;
@@ -16,6 +12,14 @@ public class Option {
     private boolean set;
     private final LinkedList<String> arguments;
 
+    /**
+     * コンストラクタ。
+     * 例） Option("h", "help", false)
+     *
+     * @param shortOption 短いオプション
+     * @param longOption 長いオプション
+     * @param requireArgument 引数をとるかどうか
+     */
     public Option(String shortOption, String longOption, boolean requireArgument){
         this.shortOption = shortOption;
         this.longOption = longOption;

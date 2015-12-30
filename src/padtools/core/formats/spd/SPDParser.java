@@ -16,10 +16,6 @@ public class SPDParser {
      */
     private SPDParser(){}
 
-    /*
-        文字列 -> PADモデル　処理
-     */
-
     /**
      * 何もしないダミーのエラーレシーバ。
      */
@@ -36,7 +32,8 @@ public class SPDParser {
      */
     private static class Context {
         public enum OptionStatus{
-            Default, Else
+            Default,
+            Else
         }
 
         /* 親のコンテキスト */

@@ -1,7 +1,7 @@
 package padtools.core.formats.spd;
 
 /**
- * パース時のエラー。
+ * パース時の例外。
  */
 public class ParseErrorException extends Exception {
     private final String userMessage;
