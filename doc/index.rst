@@ -1,5 +1,7 @@
-PadTools
+PadTools 1.1
 ***********
+
+.. image:: images/ss.jpg
 
 概要
 ====
@@ -136,7 +138,7 @@ PadTools では以下の命令文が定義されています。
 最新版
 ------
 
-* :download:`PadTools 1.0 <files/padtools.1_1.zip>`
+* :download:`PadTools 1.1 <files/padtools.1_1.zip>`
 
 以前のバージョン
 --------------
