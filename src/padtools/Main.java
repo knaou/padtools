@@ -57,7 +57,7 @@ public class Main {
         }
 
         if(optHelp.isSet()){
-            System.err.println("$ " + args[0] +  "[-o result_file] [-s scale] [-h] [spd_file]");
+            System.err.println("Arguments: [-o result_file] [-s scale] [-h] [spd_file]");
             System.err.println("  -o result_file: Save to result_file.");
             System.err.println("        -s scale: Image scale(available when result_file is set).");
             System.err.println("              -h: Show this help.");

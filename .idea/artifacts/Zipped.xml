@@ -4,8 +4,8 @@
     <root id="root">
       <element id="archive" name="padtools.zip">
         <element id="artifact" artifact-name="PadTools:jar" />
-        <element id="file-copy" path="$PROJECT_DIR$/bundle/ReadMe.win.txt" />
-        <element id="file-copy" path="$PROJECT_DIR$/bundle/ReadMe.linux.txt" />
+        <element id="dir-copy" path="$PROJECT_DIR$/bundle" />
+        <element id="file-copy" path="$PROJECT_DIR$/README.md" />
       </element>
     </root>
   </artifact>
