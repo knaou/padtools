@@ -28,4 +28,12 @@ public class PathUtil {
 
         return ret;
     }
+
+    /**
+     * プログラムが動作しているディレクトリを取得する
+     * @return プログラムが動作しているディレクトリ
+     */
+    public static String getBasePath() {
+        return new File(System.getProperty("user.dir")).getAbsolutePath();
+    }
 }

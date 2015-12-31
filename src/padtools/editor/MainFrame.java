@@ -3,25 +3,12 @@ package padtools.editor;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -32,30 +19,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import padtools.Constants;
+import padtools.Main;
+import padtools.Setting;
 import padtools.core.formats.spd.ParseErrorException;
 import padtools.core.formats.spd.ParseErrorReceiver;
 import padtools.core.formats.spd.SPDParser;
@@ -71,28 +42,21 @@ import padtools.util.PathUtil;
  */
 public class MainFrame extends JFrame {
 
-    /**
-     * タイトル付きパネルを生成するためのクラス。
-     */
-    private class TitledPanel extends JPanel {
+    //現在開いているファイル
+    private File filePath = null;
+    //最後に選択された行
+    private int beforeLine = 0;
 
-        /**
-         * タイトル付きのコンポーネントを表示する。
-         * @param comp 表示するメインのコンポーネント。
-         * @param title 表示するタイトル。
-         */
-        public TitledPanel(Component comp, String title) {
-            super(new BorderLayout());
-            //this.add(new JLabel(title), BorderLayout.NORTH);
-            this.add(comp, BorderLayout.CENTER);
-            this.setBorder(new TitledBorder(title));
-        }
-    }
-
-    private final SPDEditor editor;
-    private final JList messageList;
+    //モデル変換
     private final Model2View model2View = new Model2View();
-    private File filePath = null;//開いているファイル
+
+    //エディタ部コントロール
+    private final SPDEditor editor;
+
+    //エラー一覧部コントロール
+    private final JList messageList;
+
+    //ビュー部コントロール
     private BufferedView view = null;
     private final JPanel viewPanel = new JPanel() {
 
@@ -107,15 +71,82 @@ public class MainFrame extends JFrame {
             }
         }
     };
-    //最後に選択された行
-    private int beforeLine = 0;
 
     public MainFrame(final File file) {
-        super("SPD Editor");
+        Setting setting = Main.getSetting();
+
         //各コンポーネントを生成を生成
         editor = new SPDEditor();
         messageList = new JList(new DefaultListModel());
 
+        //アイコンを読み込む
+        loadIcons();
+
+        //イベント設定
+        initSPDEditorEvent();
+
+        //描画の設定
+        ViewOption defOpt = model2View.getOptionMap().get(model2View.KEY_DEFAULT);
+        defOpt.setPaint(new Color(0.2f, 0.2f, 0.2f));
+        defOpt.setStroke(new BasicStroke(2.0f));
+
+        //全体のパネル生成
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
+
+        //ツールバー設定
+        try {
+            setJMenuBar(createMenuBar());
+            if(!setting.isDisableToolbar()) {
+                mainPanel.add(createToolBar(), BorderLayout.NORTH);
+            }
+        } catch (IOException ex) {
+        }
+
+        //レイアウト及びスクロールバー生成
+        JComponent editorWithScroll = editor.withScroll();
+        JSplitPane leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new TitledPanel(editorWithScroll, "Logic入力"), new TitledPanel(messageList, "エラー情報"));
+        JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftSplit, new JScrollPane(viewPanel));
+        mainPanel.add(mainSplit, BorderLayout.CENTER);
+        add(mainPanel, BorderLayout.CENTER);
+
+        //表示の調整
+        mainPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
+        messageList.setBackground(new Color(0.9f, 0.9f, 0.9f));
+        messageList.setBorder(new LineBorder(Color.gray));
+        leftSplit.setResizeWeight(0.8);
+        mainSplit.setResizeWeight(0.3);
+        mainSplit.setBorder(null);
+        leftSplit.setBorder(null);
+
+        //メインウインドウの動作を設定
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        initMainWindowListener();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                //初期値設定
+                if(file == null){
+                    initWithDefaultText();
+                }
+                else {
+                    open(file);
+                }
+            }
+        });
+
+        //タイトルを更新する
+        updateTitle();
+    }
+
+    private ImageIcon iconNew;
+    private ImageIcon iconOpen;
+    private ImageIcon iconSave;
+    private ImageIcon iconSavePad;
+    private ImageIcon iconRefresh;
+    private ImageIcon iconHelp;
+    private void loadIcons() {
         //アイコンの読み込み
         //画像を読み込む
         try {
@@ -148,117 +179,21 @@ public class MainFrame extends JFrame {
         } catch (IOException io) {
             iconHelp = null;
         }
-
-        //イベント設定
-        initSPDEditorEvent();
-
-        //描画の設定
-        ViewOption defOpt = model2View.getOptionMap().get(model2View.KEY_DEFAULT);
-        defOpt.setPaint(new Color(0.2f, 0.2f, 0.2f));
-        defOpt.setStroke(new BasicStroke(2.0f));
-
-        //構成を設定
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        setLayout(new BorderLayout(10, 10));
-
-        //ツールバー設定
-        try {
-            setJMenuBar(createMenuBar());
-            mainPanel.add(createToolBar(), BorderLayout.NORTH);
-        } catch (IOException ex) {
-        }
-
-        JComponent editorWithScroll = editor.withScroll();
-        JSplitPane leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new TitledPanel(editorWithScroll, "Logic入力"), new TitledPanel(messageList, "エラー情報"));
-        JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftSplit, new JScrollPane(viewPanel));
-        mainPanel.add(mainSplit, BorderLayout.CENTER);
-        add(mainPanel, BorderLayout.CENTER);
-
-        //表示の調整
-        mainPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
-        messageList.setBackground(new Color(0.9f, 0.9f, 0.9f));
-        messageList.setBorder(new LineBorder(Color.gray));
-        leftSplit.setResizeWeight(0.8);
-        mainSplit.setResizeWeight(0.3);
-        mainSplit.setBorder(null);
-        leftSplit.setBorder(null);
-
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowListener() {
-
-            @Override
-            public void windowOpened(WindowEvent we) {
-            }
-
-            @Override
-            public void windowClosing(WindowEvent we) {
-                if (releaseOK()) {
-                    MainFrame.this.dispose();
-                }
-            }
-
-            @Override
-            public void windowClosed(WindowEvent we) {
-            }
-
-            @Override
-            public void windowIconified(WindowEvent we) {
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent we) {
-            }
-
-            @Override
-            public void windowActivated(WindowEvent we) {
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent we) {
-            }
-        });
-
-        
-            SwingUtilities.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    //初期値設定
-                    if(file == null){
-                    
-                        //初期文字列設定
-                        String header = ":terminal START\n\n";
-                        String comment = "#ロジックを記述してください\nロジック";
-                        String footer = "\n\n:terminal END";
-                        editor.requestFocusInWindow();
-                        editor.setText(header + comment + footer);
-                        editor.select(header.length(), header.length() + comment.length());
-                        editor.setEdited(false);
-                        editor.setRequireSave(false);
-
-                        applyLogic();
-                    }
-                    else {
-                        open(file);
-                    }
-                    
-                }
-            });
     }
-        
-    private ImageIcon iconNew;
-    private ActionListener actionNew = new ActionListener() {
 
+    //新規作成アクション
+    private ActionListener actionNew = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent ae) {
             if (releaseOK()) {
-                newDocument();
+                initWithDefaultText();
+                filePath = null;
+                updateTitle();
             }
         }
     };
-    private ImageIcon iconOpen;
+    //開くアクション
     private ActionListener actionOpen = new ActionListener() {
-
         @Override
         public void actionPerformed(ActionEvent ae) {
             if (releaseOK()) {
@@ -266,49 +201,44 @@ public class MainFrame extends JFrame {
             }
         }
     };
-    private ImageIcon iconSave;
+    //保存アクション
     private ActionListener actionSave = new ActionListener() {
-
         @Override
         public void actionPerformed(ActionEvent ae) {
             save();
         }
     };
+    //名前をつけて保存アクション
     private ActionListener actionSaveAs = new ActionListener() {
-
         @Override
         public void actionPerformed(ActionEvent ae) {
             saveAs();
         }
     };
-    private ImageIcon iconClipboard;
-    private ImageIcon iconSavePad;
+    //PAD図保存アクション
     private ActionListener actionSavePadImage = new ActionListener() {
-
         @Override
         public void actionPerformed(ActionEvent ae) {
             applyLogic();
             savePadImage();
         }
     };
-    private ImageIcon iconRefresh;
+    //画面の更新アクション
     private ActionListener actionRefresh = new ActionListener() {
-
         @Override
         public void actionPerformed(ActionEvent ae) {
             applyLogic();
         }
     };
-    private ImageIcon iconHelp;
+    //バージョン情報アクション
     private ActionListener actionVersion = new ActionListener() {
-
         @Override
         public void actionPerformed(ActionEvent ae) {
-            JOptionPane.showMessageDialog(MainFrame.this, "PadTools 1.0", "バージョン情報", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(MainFrame.this, Constants.APP_NAME + " " + Constants.APP_VERSION, "バージョン情報", JOptionPane.INFORMATION_MESSAGE);
         }
     };
+    //閉じるアクション
     private ActionListener actionClose = new ActionListener() {
-
         @Override
         public void actionPerformed(ActionEvent ae) {
             if (releaseOK()) {
@@ -316,8 +246,9 @@ public class MainFrame extends JFrame {
             }
         }
     };
-
     private JToolBar createToolBar() throws IOException {
+        Setting setting = Main.getSetting();
+
         JToolBar toolBar = new JToolBar();
         toolBar.setBorderPainted(false);
         toolBar.setFloatable(false);
@@ -333,10 +264,12 @@ public class MainFrame extends JFrame {
         button.setBorderPainted(false);
         button.addActionListener(actionOpen);
 
-        button = new JButton("保存", iconSave);
-        toolBar.add(button);
-        button.setBorderPainted(false);
-        button.addActionListener(actionSave);
+        if(!setting.isDisableSaveMenu()) {
+            button = new JButton("保存", iconSave);
+            toolBar.add(button);
+            button.setBorderPainted(false);
+            button.addActionListener(actionSave);
+        }
 
         toolBar.addSeparator();
 
@@ -362,8 +295,9 @@ public class MainFrame extends JFrame {
 
         return toolBar;
     }
-
     private JMenuBar createMenuBar() throws IOException {
+        Setting setting = Main.getSetting();
+
         JMenuBar menuBar = new JMenuBar();
 
         JMenu menu = new JMenu("ファイル(F)");
@@ -372,18 +306,23 @@ public class MainFrame extends JFrame {
         JMenuItem item = new JMenuItem("新規作成(N)", iconNew);
         menu.add(item);
         item.addActionListener(actionNew);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
 
         menu.addSeparator();
 
         item = new JMenuItem("開く(O)", iconOpen);
         menu.add(item);
         item.addActionListener(actionOpen);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 
         menu.addSeparator();
 
-        item = new JMenuItem("保存(S)", iconSave);
-        menu.add(item);
-        item.addActionListener(actionSave);
+        if(!setting.isDisableSaveMenu()) {
+            item = new JMenuItem("保存(S)", iconSave);
+            menu.add(item);
+            item.addActionListener(actionSave);
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+        }
 
         item = new JMenuItem("名前を付けて保存(A)", null);
         menu.add(item);
@@ -408,6 +347,7 @@ public class MainFrame extends JFrame {
         item = new JMenuItem("再描画(R)", iconRefresh);
         menu.add(item);
         item.addActionListener(actionRefresh);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
 
         menu = new JMenu("ヘルプ(H)");
         menuBar.add(menu);
@@ -433,6 +373,7 @@ public class MainFrame extends JFrame {
             @Override
             public void keyReleased(KeyEvent ke) {
                 checkRefresh();
+                updateTitle();
             }
         });
         editor.addFocusListener(new FocusListener() {
@@ -475,6 +416,71 @@ public class MainFrame extends JFrame {
             public void mouseExited(MouseEvent me) {
             }
         });
+    }
+
+    private void initMainWindowListener() {
+        addWindowListener(new WindowListener() {
+
+            @Override
+            public void windowOpened(WindowEvent we) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent we) {
+                if (releaseOK()) {
+                    MainFrame.this.dispose();
+                }
+            }
+
+            @Override
+            public void windowClosed(WindowEvent we) {
+            }
+
+            @Override
+            public void windowIconified(WindowEvent we) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent we) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent we) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent we) {
+            }
+        });
+    }
+
+    private void initWithDefaultText(){
+        //初期文字列設定
+        String header = ":terminal START\n\n";
+        String comment = "#ロジックを記述してください\nロジック";
+        String footer = "\n\n:terminal END";
+        editor.requestFocusInWindow();
+        editor.setText(header + comment + footer);
+        editor.select(header.length(), header.length() + comment.length());
+        editor.setEdited(false);
+        editor.setRequireSave(false);
+        applyLogic();
+    }
+
+    private void updateTitle() {
+        String fn;
+        if(filePath == null) {
+            fn = "NEW";
+        } else {
+            fn = filePath.getPath();
+        }
+        String flag;
+        if(editor.isRequireSave()) {
+            flag = "*";
+        } else {
+            flag = "";
+        }
+        this.setTitle(Constants.APP_NAME + " " + Constants.APP_VERSION + " " + "[" + flag + fn + "]");
     }
 
     private void checkRefresh() {
@@ -536,12 +542,6 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void newDocument() {
-        editor.setText("");
-        editor.setRequireSave(false);
-        applyLogic();
-    }
-
     private void open(File file) {
         filePath = file;
         try {
@@ -569,6 +569,7 @@ public class MainFrame extends JFrame {
         }
         
         applyLogic();
+        updateTitle();
     }
 
     private void open() {
@@ -602,6 +603,7 @@ public class MainFrame extends JFrame {
             return saveAs();
         }
         applyLogic();
+        updateTitle();
         return true;
     }
 

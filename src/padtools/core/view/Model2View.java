@@ -132,7 +132,7 @@ public class Model2View {
         else {
             return null;
         }
-        
+
         view.setTag(view);
         return view;
     }
@@ -144,7 +144,12 @@ public class Model2View {
      */
     public View toView(PADModel model){
         View mainView = NodeToView(model.getTopNode());
+        if(mainView == null) {
+            mainView = new TextView(getOption(null, KEY_TEXT), "<EMPTY>");
+        }
+
         mainView.setViewOption(getOption(null, KEY_MAIN));
+
         return mainView;
     }
 }
