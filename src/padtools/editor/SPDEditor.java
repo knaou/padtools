@@ -31,7 +31,6 @@ import javax.swing.text.TabStop;
  */
 class SPDEditor extends JTextPane {
 
-    
     private class RowHeader extends JComponent {
         private int fontHeight = 0;
         
@@ -195,6 +194,9 @@ class SPDEditor extends JTextPane {
         getStyledDocument().setParagraphAttributes(0, l, attrs, false);
         
         rowHeader = new RowHeader();
+
+        //右クリックメニューをつける
+        new JTextEditPopupMenu(this).assignEvent();
     }
     
     public void setErrorLine(int line){
