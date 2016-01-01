@@ -1,3 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
-out
-doc/_build
+/out
+/doc/_build
+/settings.xml
