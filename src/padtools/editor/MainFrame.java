@@ -8,10 +8,13 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -35,6 +38,21 @@ import padtools.core.view.BufferedView;
 import padtools.core.view.Model2View;
 import padtools.core.view.ViewOption;
 import padtools.util.PathUtil;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.svggen.SVGGraphics2DIOException;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /*
  *
@@ -215,12 +233,20 @@ public class MainFrame extends JFrame {
             saveAs();
         }
     };
-    //PAD図保存アクション
-    private ActionListener actionSavePadImage = new ActionListener() {
+    //PNG形式で保存アクション
+    private ActionListener actionSavePadImageAsPng = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent ae) {
             applyLogic();
-            savePadImage();
+            savePadImageAsPng();
+        }
+    };
+    //SVG形式で保存アクション
+    private ActionListener actionSavePadImageAsSvg = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            applyLogic();
+            savePadImageAsSvg();
         }
     };
     //画面の更新アクション
@@ -280,10 +306,15 @@ public class MainFrame extends JFrame {
 
         toolBar.addSeparator();
 
-        button = new JButton("PAD図を保存", iconSavePad);
+        button = new JButton("PNG形式で保存", iconSavePad);
         toolBar.add(button);
         button.setBorderPainted(false);
-        button.addActionListener(actionSavePadImage);
+        button.addActionListener(actionSavePadImageAsPng);
+
+        button = new JButton("SVG形式で保存", iconSavePad);
+        toolBar.add(button);
+        button.setBorderPainted(false);
+        button.addActionListener(actionSavePadImageAsSvg);
 
         toolBar.add(Box.createGlue());
         toolBar.addSeparator();
@@ -337,9 +368,13 @@ public class MainFrame extends JFrame {
         menu = new JMenu("出力(O)");
         menuBar.add(menu);
 
-        item = new JMenuItem("PAD図を保存(I)", iconSavePad);
+        item = new JMenuItem("PNG形式で保存(I)", iconSavePad);
         menu.add(item);
-        item.addActionListener(actionSavePadImage);
+        item.addActionListener(actionSavePadImageAsPng);
+
+        item = new JMenuItem("SVG形式で保存(J)", iconSavePad);
+        menu.add(item);
+        item.addActionListener(actionSavePadImageAsSvg);
 
         menu = new JMenu("表示(V)");
         menuBar.add(menu);
@@ -618,7 +653,7 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void savePadImage() {
+    private void savePadImageAsPng() {
         applyLogic();
         JFileChooser fc = new JFileChooser(filePath == null ? new File(".") : filePath);
         fc.setFileFilter(new FileNameExtensionFilter("png image(*.png)", "png"));
@@ -655,5 +690,56 @@ public class MainFrame extends JFrame {
         }
     }
 
+    void outputSVG(File f) {
+        Rectangle r = viewPanel.getBounds();
+        DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
+        Document document = domImpl.createDocument(null, "svg", null);
+        SVGGraphics2D svg2d = new SVGGraphics2D(document);
+        svg2d.setBackground(new Color(255,255,255,0));
+        svg2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        view.getView().draw(svg2d, new Point2D.Double());
+        Element sv = svg2d.getRoot();
+        sv.setAttribute("xml:space", "preserve");
+        sv.setAttribute("width", Integer.toString((int)r.getWidth()));
+        sv.setAttribute("height", Integer.toString((int)r.getHeight()));
+        sv.setAttribute("viewBox",
+                        Integer.toString((int)r.getX())+" "+
+                        Integer.toString((int)r.getY())+" "+
+                        Integer.toString((int)r.getWidth())+" "+
+                        Integer.toString((int)r.getHeight())
+        );
+        try {
+           OutputStream os = new FileOutputStream(f);
+           BufferedOutputStream bos = new BufferedOutputStream(os);
+           Writer out = new OutputStreamWriter(bos, "UTF-8");
+           svg2d.stream(sv,out);
+        } catch (UnsupportedEncodingException ue){
+            ue.printStackTrace();
+        } catch (SVGGraphics2DIOException se){
+            se.printStackTrace();
+        } catch (IOException ioe){
+            ioe.printStackTrace();
+       }
+    }
 
+    private void savePadImageAsSvg() {
+        applyLogic();
+        JFileChooser fc = new JFileChooser(filePath == null ? new File(".") : filePath);
+        fc.setFileFilter(new FileNameExtensionFilter("svg image(*.svg)", "svg"));
+
+        File sel;
+        if(filePath == null){
+            sel = new File("./new_pad.svg");
+        }
+        else{
+            sel = new File(PathUtil.extConvert(filePath.getPath(), "svg"));
+        }
+
+        fc.setSelectedFile(sel);
+        File svgfile = fc.getSelectedFile();
+
+        if (fc.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
+            outputSVG(fc.getSelectedFile());
+        }
+    }
 }
