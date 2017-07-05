@@ -138,7 +138,7 @@ PadTools では以下の命令文が定義されています。
 最新版
 ------
 
-* :download:`PadTools 1.1 <files/padtools.1_1.zip>`
+* :download:`PadTools Guthub Releases <https://github.com/knaou/padtools/releases>`
 
 以前のバージョン
 --------------
@@ -152,7 +152,7 @@ PadTools では以下の命令文が定義されています。
 権利(1.0以後)
 =====
 
-| Copyright (c) 2015１-2016 naou
+| Copyright (c) 2015１-2017 naou
 | Released under the MIT license(http://opensource.org/licenses/mit-license)
 
 権利(0.1以前)
