@@ -17,8 +17,7 @@ dependencies {
 def defaultEncoding = 'UTF-8'
 
 compileJava {
-    options.encoding = defaultEncoding  // src/main/java配下の*.javaに影響
-    // JAVA_OPTS=-Dfile.encoding で代替可能
+    options.encoding = defaultEncoding
 }
 
 jar {
