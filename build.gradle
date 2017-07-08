@@ -1,0 +1,45 @@
+group 'com.padtools'
+version '1.2'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compile 'org.apache.xmlgraphics:batik-svggen:1.9'
+    compile 'org.apache.xmlgraphics:batik-dom:1.9'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+def defaultEncoding = 'UTF-8'
+
+compileJava {
+    options.encoding = defaultEncoding  // src/main/java配下の*.javaに影響
+    // JAVA_OPTS=-Dfile.encoding で代替可能
+}
+
+jar {
+    archiveName = "PadTools.jar"
+    manifest {
+        attributes 'Main-Class' : "padtools.Main"
+        attributes 'Class-Path' : configurations.compile.collect{'libs/' + it.name}.join(' ')
+    }
+}
+
+task makeZip(type : Zip, dependsOn: ['jar']) {
+    outputs.upToDateWhen { false }
+
+    from 'bundle'
+    from 'build/libs/PadTools.jar'
+
+    into ('libs') {
+        from configurations.runtime
+    }
+}
+
+compileTestJava {
+    options.encoding = defaultEncoding
+}
