@@ -4,28 +4,71 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.Objects;
+
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.svggen.SVGGraphics2DIOException;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import padtools.Constants;
 import padtools.Main;
@@ -38,19 +81,7 @@ import padtools.core.view.BufferedView;
 import padtools.core.view.Model2View;
 import padtools.core.view.ViewOption;
 import padtools.util.PathUtil;
-
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-
-import org.apache.batik.dom.GenericDOMImplementation;
-import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.svggen.SVGGraphics2DIOException;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import say.swing.JFontChooser;
 
 /*
  *
@@ -103,8 +134,9 @@ public class MainFrame extends JFrame {
 
         //描画の設定
         ViewOption defOpt = model2View.getOptionMap().get(model2View.KEY_DEFAULT);
-        defOpt.setPaint(new Color(0.2f, 0.2f, 0.2f));
+        defOpt.setPaint(Main.getSetting().getViewColor());
         defOpt.setStroke(new BasicStroke(2.0f));
+        defOpt.setFont(Main.getSetting().getViewFont());
 
         //全体のパネル生成
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -247,6 +279,24 @@ public class MainFrame extends JFrame {
             applyLogic();
         }
     };
+    //エディタフォント更新アクション
+    private ActionListener actionEditorFont = new ActionListener(){
+        public void actionPerformed(ActionEvent e){
+            showEditorFontDialog();
+        }
+    };
+    //Viewフォント更新アクション
+    private ActionListener actionViewFont = new ActionListener(){
+        public void actionPerformed(ActionEvent e){
+            showViewFontDialog();
+        }
+    };
+    //Viewカラー更新アクション
+    private ActionListener actionViewColor = new ActionListener(){
+        public void actionPerformed(ActionEvent e){
+            showViewColorDialog();
+        }
+    };
     //バージョン情報アクション
     private ActionListener actionVersion = new ActionListener() {
         public void actionPerformed(ActionEvent ae) {
@@ -372,7 +422,19 @@ public class MainFrame extends JFrame {
         menu.add(item);
         item.addActionListener(actionRefresh);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
-
+        
+        item = new JMenuItem("エディタフォント");
+        menu.add(item);
+        item.addActionListener(actionEditorFont);
+        
+        item = new JMenuItem("PAD図フォント");
+        menu.add(item);
+        item.addActionListener(actionViewFont);
+        
+        item = new JMenuItem("PAD図カラー");
+        menu.add(item);
+        item.addActionListener(actionViewColor);
+        
         menu = new JMenu("ヘルプ(H)");
         menuBar.add(menu);
 
@@ -521,6 +583,50 @@ public class MainFrame extends JFrame {
         viewPanel.setSize(d);
         viewPanel.setPreferredSize(d);
         viewPanel.updateUI();
+    }
+    
+    private static interface FontConsumer{
+        void consume(Font font);
+    }
+    private void showFontDialog(Font oldFont,FontConsumer setFont){
+        JFontChooser f = new JFontChooser();
+        f.setSelectedFont(oldFont);
+        if(f.showDialog(MainFrame.this)==JFontChooser.OK_OPTION){
+            Font newFont = f.getSelectedFont();
+            if(!Objects.equals(newFont, oldFont)){
+                setFont.consume(newFont);
+                Main.saveSetting();
+            }
+        }
+    }
+    private void showEditorFontDialog(){
+        showFontDialog(Main.getSetting().getEditorFont(), new FontConsumer(){
+            public void consume(Font font){
+                editor.updateFont(font);
+                Main.getSetting().setEditorFont(font);
+            }
+        });
+    }
+    private void showViewFontDialog(){
+        showFontDialog(Main.getSetting().getViewFont(), new FontConsumer(){
+            public void consume(Font font){
+                ViewOption defOpt = model2View.getOptionMap().get(model2View.KEY_DEFAULT);
+                defOpt.setFont(font);
+                Main.getSetting().setViewFont(font);
+                applyLogic();
+            }
+        });
+    }
+    private void showViewColorDialog(){
+        Color oldColor = Main.getSetting().getViewColor();
+        Color c = JColorChooser.showDialog(this, "Select Color", oldColor);
+        if(c!=null && !Objects.equals(oldColor, c)){
+            ViewOption defOpt = model2View.getOptionMap().get(model2View.KEY_DEFAULT);
+            defOpt.setPaint(c);
+            Main.getSetting().setViewColor(c);
+            applyLogic();
+            Main.saveSetting();
+        }
     }
 
     /**
@@ -712,4 +818,6 @@ public class MainFrame extends JFrame {
             outputSVG(fc.getSelectedFile());
         }
     }
+    
+
 }

@@ -19,6 +19,17 @@ public class Main {
         if(setting == null) throw new RuntimeException("Setting is not set");
         return setting;
     }
+    /**
+     * Settingを保存する
+     */
+    public static void saveSetting(){
+        File setting_file = new File(PathUtil.getBasePath(), "settings.xml");
+        try{
+            setting.saveToFile(setting_file);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
 
     /**
      * エントリポイント

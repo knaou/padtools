@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -25,6 +26,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
+
+import padtools.Main;
 /**
  * LPDを編集するペイン。
  * @author monaou
@@ -90,6 +93,13 @@ class SPDEditor extends JTextPane {
             keywords.add(":case");
             keywords.add(":call");
             keywords.add(":terminal");
+        }
+        
+        @Override
+        public Font getFont(AttributeSet attr){
+            Font f = super.getFont(attr);
+            Font base = SPDEditor.this.getFont();
+            return base.deriveFont(f.getStyle());
         }
 
         @Override
@@ -179,7 +189,7 @@ class SPDEditor extends JTextPane {
         doc.setParagraphAttributes(0, doc.getLength(), attr, true);
         
         //タブを設定する。
-        setFont(new Font("Dialog", Font.PLAIN, 14));
+        setFont(Main.getSetting().getEditorFont());
         FontMetrics fm = getFontMetrics(getFont());
         int charWidth = fm.charWidth('m');
         int tabLength = charWidth * 2;
@@ -197,6 +207,13 @@ class SPDEditor extends JTextPane {
 
         //右クリックメニューをつける
         new JTextEditPopupMenu(this).assignEvent();
+    }
+    
+    public void updateFont(Font font){
+        if(!Objects.equals(font, getFont())){
+            setFont(font);
+            setText(getText()); //rerendering
+        }
     }
     
     public void setErrorLine(int line){
