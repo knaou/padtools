@@ -680,10 +680,9 @@ public class MainFrame extends JFrame {
                         Integer.toString((int)r.getWidth())+" "+
                         Integer.toString((int)r.getHeight())
         );
-        try {
-           OutputStream os = new FileOutputStream(f);
-           BufferedOutputStream bos = new BufferedOutputStream(os);
-           Writer out = new OutputStreamWriter(bos, "UTF-8");
+        try (OutputStream os = new FileOutputStream(f);
+             BufferedOutputStream bos = new BufferedOutputStream(os);
+             Writer out = new OutputStreamWriter(bos, "UTF-8");){
            svg2d.stream(sv,out);
         } catch (UnsupportedEncodingException ue){
             ue.printStackTrace();
@@ -708,7 +707,6 @@ public class MainFrame extends JFrame {
         }
 
         fc.setSelectedFile(sel);
-        File svgfile = fc.getSelectedFile();
 
         if (fc.showSaveDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
             outputSVG(fc.getSelectedFile());
