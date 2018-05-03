@@ -1,6 +1,14 @@
 Change log
 =============
 
+1.3
+--------
+
+
+* フォント及び色の指定機能の実装(PR:https://github.com/knaou/padtools/pull/5)
+* bugfix
+    * https://github.com/knaou/padtools/pull/5
+
 1.2
 --------
 

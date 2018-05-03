@@ -1,4 +1,4 @@
-PadTools 1.2
+PadTools 1.3
 ======================================
 
 概要
@@ -8,7 +8,7 @@ PadTools はPAD図を活用することを目的として作成された、PAD�
 
 動作環境
 ------------------------------------------------
-* Windows10 JRE 1.7
+* Windows10 JRE 1.8
 
 上記の環境で動作を確認しております。
 その他環境でも、JRE1.7が動作するOSであれば動作する可能性がありますが、
@@ -16,7 +16,7 @@ PadTools はPAD図を活用することを目的として作成された、PAD�
 
 ライセンス
 ------------------------------------------------
-    Copyright (c) 2015-2016 naou
+    Copyright (c) 2015-2018 naou
     
     Released under the MIT license(http://opensource.org/licenses/mit-license)
 

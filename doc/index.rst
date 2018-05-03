@@ -1,4 +1,4 @@
-PadTools 1.1
+PadTools 1.3
 ***********
 
 .. image:: images/ss.jpg
@@ -10,10 +10,10 @@ PadTools はPAD図を活用することを目的としています。
 
 動作環境
 ========
-1. Windows7 JRE 1.7
+1. Windows10 JRE8
 
 上記の環境で動作を確認しております。
-その他環境でも、JRE1.7が動作するOSであれば動作する可能性がありますが、
+その他環境でも、JRE8が動作するOSであれば動作する可能性がありますが、
 上記環境以外では動作確認をおこなっておりません。
 
 利用法
@@ -135,53 +135,15 @@ PadTools では以下の命令文が定義されています。
 ダウンロード
 ===========
 
-最新版
-------
-
-* :download:`PadTools Guthub Releases <https://github.com/knaou/padtools/releases>`
-
-以前のバージョン
---------------
-
-* :download:`PadTools 1.0 <files/padtools.1_0.zip>`
-* :download:`PadTools 0.1 <files/padtools.0_1.zip>`
-* :download:`PadTools β <files/padtools.beta.zip>`
-
-* LogicPad は公開を停止しました。
-
-権利(1.0以後)
-=====
-
-| Copyright (c) 2015１-2017 naou
-| Released under the MIT license(http://opensource.org/licenses/mit-license)
-
-権利(0.1以前)
-=====
-
-著作権
--------
-本ソフトはフリーソフトです。自由にご使用ください。
-なお，著作権は作者であるnaouが保有しています。
-
-このソフトウェアを使用したことによって生じたすべての障害・損害・不具合等に関しては、
-私と私の関係者および私の所属するいかなる団体・組織とも、一切の責任を負いません。
-各自の責任においてご使用ください。
+`PadTools Guthub Releases <https://github.com/knaou/padtools/releases>`_
 
 ライセンス
----------
-本ソフトウェアは、個人使用、商用利用に関わらず自由に使用することができます。
-本ソフトウェアを使用し作成されたデータについては、
-作成者の著作物であり、いかなる制約もありません。
+==========
 
-再配布
-------
-再配布に関しては以下の制約があるので、ご注意ください。
-
-* オリジナルのアーカイブファイルのまま、頒布または転載すること。
-* 頒布または転載の際に、メディア代等の実費を除き、金銭の授与があってはなりません。
-* 商業目的で頒布する場合は事前に作者の許可を得る必要があります。
+| Copyright (c) 2015-2018 naou
+| Released under the MIT license(`http://opensource.org/licenses/mit-license`_)
 
 リンク
 =====
 * GitHub <https://github.com/knaou/padtools>
-* naou.cool-ex.com <http://naou.cool-ex.com>
+* naou.cool-ex.com <https://naou.cool-ex.com>
