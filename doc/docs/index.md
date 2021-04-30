@@ -1,35 +1,33 @@
-PadTools 1.4
-***********
+#PadTools 1.4
 
-.. image:: images/ss.jpg
+![イメージ](./images/ss.jpg)
 
-概要
-====
-PadTools はPAD図を活用することを目的としています。
+## 概要
+
+PadTools はPAD図を活用するために、直感的な記法と、画像ファイルへのエクスポート機能を提供します。
 思考を止めず記述できることを目指しています。
 
-動作環境
-========
+## 動作環境
+
 1. Windows10 JRE8
 
 上記の環境で動作を確認しております。
 その他環境でも、JRE8が動作するOSであれば動作する可能性がありますが、
 上記環境以外では動作確認をおこなっておりません。
 
-利用法
-======
+## 利用法
 
-SPD(Simple PAD Description)文法
---------------------------------
+### SPD(Simple PAD Description)文法
+
 PadToolsではロジックを記述する際に SPDフォーマットを使用します。
 本節では、SPDフォーマットの文法について説明を行います。
 
-ブロック
-^^^^^^^
+#### ブロック
+
 1行がPADの１ボックスと対応します。
 ただし、空白行や「#」(シャープ)から始まる行は読み飛ばします。
 
-例::
+例:
 
     #コメント
     a = 10
@@ -37,16 +35,15 @@ PadToolsではロジックを記述する際に SPDフォーマットを使用�
     
 ↓（PADへ変換）
 
-.. image:: images/format_basic_01.png
+![Pad](./images/format_basic_01.png)
 
-ブロック内の改行
-^^^^^^^^^^^^^^
+#### ブロック内の改行
 
 文中に「@」(アットマーク)を使用した場合、改行文字として扱われます。
 文末に「@」が現れた場合は、改行を行うとともに、
 次の行も含めてPADの１ボックスを作成します。
 
-例1::
+例1:
 
      a = 10
      a を表示@標準エラー出力に出力
@@ -54,9 +51,9 @@ PadToolsではロジックを記述する際に SPDフォーマットを使用�
 
 ↓（PADへ変換）
 
-.. image:: images/format_basic_02.png
+![ブロック内改行](./images/format_basic_02.png)
 
-例2::
+例2:
 
      a = 10
      a を表示@
@@ -65,13 +62,13 @@ PadToolsではロジックを記述する際に SPDフォーマットを使用�
 
 ↓（PADへ変換）
 
-.. image:: images/format_basic_02.png
+![ブロック内改行2](./images/format_basic_02.png)
 
-親子関係
-^^^^^^^^
+#### 親子関係
+
 タブ文字でインデントをつけることで、 ブロックの親子関係を記述できます。
 
-例::
+例:
 
      ブロック
          タブインデントを上げる事で子のブロックを定義できます
@@ -82,14 +79,14 @@ PadToolsではロジックを記述する際に SPDフォーマットを使用�
 
 ↓（PADへ変換）
 
-.. image:: images/format_children_01.png
+![インデント](./images/format_children_01.png)
 
-命令文(:if, :while, ...)
-^^^^^^^^^^^^^^^^^^^^^^^^
+#### 命令文(:if, :while, ...)
+
 条件分岐や繰返し文など、特別なボックスを作成するには、
 「:」(コロン)から始まる命令文を使用します。
 
-.. note::
+補足:
     文頭で「:」を使用した場合のみ命令文と認識されます。
     文中で「:」を使用した場合は、命令文ではなく通常の文字として扱われます。
 
@@ -105,7 +102,7 @@ PadTools では以下の命令文が定義されています。
 * :while … 前判定の繰り返し処理を定義する
 * :dowhile … 後判定の繰り返し処理を定義する
 
-例::
+例:
 
      開始
      :comment コメント文
@@ -130,20 +127,20 @@ PadTools では以下の命令文が定義されています。
 
 ↓（PADへ変換）
 
-.. image:: images/format_command_01.png
+![命令文](./images/format_command_01.png)
 
-ダウンロード
-===========
+## ダウンロード
 
-`PadTools Guthub Releases <https://github.com/knaou/padtools/releases>`_
+[PadTools Guthub Releases](https://github.com/knaou/padtools/releases)
 
-ライセンス
-==========
+## ライセンス
 
-| Copyright (c) 2015-2018 naou
-| Released under the MIT license(`http://opensource.org/licenses/mit-license`_)
+Copyright (c) 2015-2021 naou
 
-リンク
-=====
+Released under the [MIT license](http://opensource.org/licenses/mit-license)
+
+
+## リンク
+
 * GitHub <https://github.com/knaou/padtools>
-* naou.cool-ex.com <https://naou.cool-ex.com>
+* naoblo <https://nablo.net/>

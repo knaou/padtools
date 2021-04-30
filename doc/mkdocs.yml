@@ -1,0 +1,5 @@
+site_name: Pad Tools 1.4
+theme: material
+extra:
+    language: ja
+plugins: []
