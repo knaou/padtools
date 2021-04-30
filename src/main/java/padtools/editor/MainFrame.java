@@ -781,8 +781,7 @@ public class MainFrame extends JFrame {
         sv.setAttribute("width", Integer.toString((int)r.getWidth()));
         sv.setAttribute("height", Integer.toString((int)r.getHeight()));
         sv.setAttribute("viewBox",
-                        Integer.toString((int)r.getX())+" "+
-                        Integer.toString((int)r.getY())+" "+
+                        "0 0 "+
                         Integer.toString((int)r.getWidth())+" "+
                         Integer.toString((int)r.getHeight())
         );
