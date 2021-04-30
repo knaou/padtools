@@ -5,5 +5,5 @@ package padtools;
  */
 public class Constants {
     public final static String APP_NAME = "PadTools";
-    public final static String APP_VERSION = "1.3";
+    public final static String APP_VERSION = "1.4";
 }
