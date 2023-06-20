@@ -1,0 +1,562 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.16">
+    
+    
+      
+        <title>Pad Tools 1.4</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.26e3688c.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#padtools-14" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Pad Tools 1.4" class="md-header__button md-logo" aria-label="Pad Tools 1.4" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pad Tools 1.4
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Pad Tools 1.4" class="md-nav__button md-logo" aria-label="Pad Tools 1.4" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Pad Tools 1.4
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        Home
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    概要
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    動作環境
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    利用法
+  </a>
+  
+    <nav class="md-nav" aria-label="利用法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spdsimple-pad-description" class="md-nav__link">
+    SPD(Simple PAD Description)文法
+  </a>
+  
+    <nav class="md-nav" aria-label="SPD(Simple PAD Description)文法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    ブロック
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    ブロック内の改行
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    親子関係
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#if-while" class="md-nav__link">
+    命令文(:if, :while, ...)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    ダウンロード
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    ライセンス
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    リンク
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    概要
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    動作環境
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    利用法
+  </a>
+  
+    <nav class="md-nav" aria-label="利用法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spdsimple-pad-description" class="md-nav__link">
+    SPD(Simple PAD Description)文法
+  </a>
+  
+    <nav class="md-nav" aria-label="SPD(Simple PAD Description)文法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    ブロック
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    ブロック内の改行
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    親子関係
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#if-while" class="md-nav__link">
+    命令文(:if, :while, ...)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    ダウンロード
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    ライセンス
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    リンク
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="padtools-14">PadTools 1.4</h1>
+<p><img alt="イメージ" src="images/ss.jpg" /></p>
+<h2 id="_1">概要</h2>
+<p>PadTools はPAD図を活用するために、直感的な記法と、画像ファイルへのエクスポート機能を提供します。
+思考を止めず記述できることを目指しています。</p>
+<h2 id="_2">動作環境</h2>
+<ol>
+<li>Windows10 JRE8</li>
+</ol>
+<p>上記の環境で動作を確認しております。
+その他環境でも、JRE8が動作するOSであれば動作する可能性がありますが、
+上記環境以外では動作確認をおこなっておりません。</p>
+<h2 id="_3">利用法</h2>
+<h3 id="spdsimple-pad-description">SPD(Simple PAD Description)文法</h3>
+<p>PadToolsではロジックを記述する際に SPDフォーマットを使用します。
+本節では、SPDフォーマットの文法について説明を行います。</p>
+<h4 id="_4">ブロック</h4>
+<p>1行がPADの１ボックスと対応します。
+ただし、空白行や「#」(シャープ)から始まる行は読み飛ばします。</p>
+<p>例:</p>
+<pre><code>#コメント
+a = 10
+a を表示
+</code></pre>
+<p>↓（PADへ変換）</p>
+<p><img alt="Pad" src="images/format_basic_01.png" /></p>
+<h4 id="_5">ブロック内の改行</h4>
+<p>文中に「@」(アットマーク)を使用した場合、改行文字として扱われます。
+文末に「@」が現れた場合は、改行を行うとともに、
+次の行も含めてPADの１ボックスを作成します。</p>
+<p>例1:</p>
+<pre><code> a = 10
+ a を表示@標準エラー出力に出力
+ a = 0
+</code></pre>
+<p>↓（PADへ変換）</p>
+<p><img alt="ブロック内改行" src="images/format_basic_02.png" /></p>
+<p>例2:</p>
+<pre><code> a = 10
+ a を表示@
+ 標準エラー出力に出力
+ a = 0
+</code></pre>
+<p>↓（PADへ変換）</p>
+<p><img alt="ブロック内改行2" src="images/format_basic_02.png" /></p>
+<h4 id="_6">親子関係</h4>
+<p>タブ文字でインデントをつけることで、 ブロックの親子関係を記述できます。</p>
+<p>例:</p>
+<pre><code> ブロック
+     タブインデントを上げる事で子のブロックを定義できます
+     小ブロック1
+         孫ブロック1
+         孫ブロック2
+     子ブロック2
+</code></pre>
+<p>↓（PADへ変換）</p>
+<p><img alt="インデント" src="images/format_children_01.png" /></p>
+<h4 id="if-while">命令文(:if, :while, ...)</h4>
+<p>条件分岐や繰返し文など、特別なボックスを作成するには、
+「:」(コロン)から始まる命令文を使用します。</p>
+<p>補足:
+    文頭で「:」を使用した場合のみ命令文と認識されます。
+    文中で「:」を使用した場合は、命令文ではなく通常の文字として扱われます。</p>
+<p>PadTools では以下の命令文が定義されています。</p>
+<ul>
+<li>:comment … コメントを定義する</li>
+<li>:terminal … 端子を定義する</li>
+<li>:call … 関数呼び出しを定義する</li>
+<li>:if … 条件分岐（真／偽）を定義する</li>
+<li>:else … :if と組み合わせて使用し、偽の場合を定義する</li>
+<li>:switch … 条件分岐（任意のケース）を定義する</li>
+<li>:case … :switch と組み合わせて使用し、指定のケースを定義する</li>
+<li>:while … 前判定の繰り返し処理を定義する</li>
+<li>:dowhile … 後判定の繰り返し処理を定義する</li>
+</ul>
+<p>例:</p>
+<pre><code>:terminal 開始
+命令
+:comment コメント文
+:call 関数呼び出し
+   中身
+:if 条件式
+    真の場合
+:else
+    偽の場合(:else以下は省略可能)
+:switch 条件
+:case ケース1
+    ケース1の中身
+:case ケース2
+    ケース2の中身
+:case ...
+    ケース文は必要に応じていくつでも追加できます
+:while 繰り返し条件（先判定）
+    中身
+:dowhile 繰り返し条件（後判定）
+    中身
+:terminal 終了
+</code></pre>
+<p>↓（PADへ変換）</p>
+<p><img alt="命令文" src="images/format_command_01.png" /></p>
+<h2 id="_7">ダウンロード</h2>
+<p><a href="https://github.com/knaou/padtools/releases">PadTools Guthub Releases</a></p>
+<h2 id="_8">ライセンス</h2>
+<p>Copyright (c) 2015-2021 naou</p>
+<p>Released under the <a href="http://opensource.org/licenses/mit-license">MIT license</a></p>
+<h2 id="_9">リンク</h2>
+<ul>
+<li>GitHub <a href="https://github.com/knaou/padtools">https://github.com/knaou/padtools</a></li>
+<li>naoblo <a href="https://nablo.net/">https://nablo.net/</a></li>
+</ul>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.a51614de.min.js"></script>
+      
+    
+  </body>
+</html>
