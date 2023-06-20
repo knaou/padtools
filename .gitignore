@@ -1,5 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 /.idea
+/docs_src/site
 /.gradle
 /settings.xml
 /build

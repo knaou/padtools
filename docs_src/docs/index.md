@@ -144,4 +144,4 @@ Released under the [MIT license](http://opensource.org/licenses/mit-license)
 ## リンク
 
 * GitHub <https://github.com/knaou/padtools>
-* naoblo <https://nablo.net/>
+
